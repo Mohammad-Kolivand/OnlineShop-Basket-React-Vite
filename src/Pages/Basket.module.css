@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  min-height: 100px;
+}
+.products {
+  width: 100%;
+}
+
+.empty svg {
+  color: #b17f59;
+  text-align: center;
+  width: 200px;
+  height: 200px;
+}
+.empty p {
+  font-weight: 500;
+  font-size: 2.5rem;
+  font-family: monospace;
+  text-align: center;
+}
