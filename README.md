@@ -14,7 +14,7 @@ A minimal e-commerce interface built with React and Vite. Users can browse produ
 
 - React
 - Vite
-- CSS / TailwindCSS (if used)
+- CSS / TailwindCSS 
 
 ## Getting Started
 
