@@ -1,62 +1,160 @@
 .card {
-  width: 270px;
-  margin: 10px;
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  background-color: #fff;
-  border: 2px dashed #e2e2e2;
-  border-radius: 20px;
+  min-width: 0;
+  padding: 13px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 17px;
+  box-shadow: 0 3px 14px rgb(43 34 30 / 3%);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: #d5b9bf;
+  box-shadow: 0 12px 28px rgb(43 34 30 / 7%);
+}
+
 .card img {
-  width: 230px !important;
-  height: 230px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
+  width: 100% !important;
+  height: 200px;
+  padding: 22px;
+  margin-bottom: 15px;
+  object-fit: contain;
+  background: #faf8f5;
+  border-radius: 11px;
 }
+
 .card h3 {
-  color: #fe5d42;
-  font-size: 1.1rem;
-}
-.card p {
-  color: #666;
+  display: -webkit-box;
+  min-height: 3.5em;
+  overflow: hidden;
+  color: var(--color-text);
   font-size: 0.9rem;
   font-weight: 600;
-  margin: 10px 0 30px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
+
+.card > p {
+  margin: 10px 0 15px;
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
 .actions {
-  width: 100%;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #f0ece7;
 }
+
 .actions a {
-  font-size: 1.5rem;
-  height: 25px;
-  color: #fe5d42;
-  cursor: pointer;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--color-primary);
+  background: var(--color-soft);
+  border-radius: 10px;
+  font-size: 1.25rem;
+  transition: background 180ms ease, color 180ms ease;
 }
-.actions div {
+
+.actions a:hover {
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.actions > div {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
 }
-.actions div span {
-  width: 20px;
+
+.actions > div span {
+  min-width: 18px;
+  color: var(--color-text);
   text-align: center;
-  margin: 0 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
-.actions div button {
-    background-color: #fe5d42;
-    color: #fff;
-    border: none;
-    font-size: 1.7rem;
-    height: 32px;
-    width: 32px;
-    line-height: 32px;
-    padding: 2px;
-    border-radius: 8px;
-    cursor: pointer;
+
+.actions > div button {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  color: #fff;
+  background: var(--color-primary);
+  border: 0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: background 180ms ease;
+}
+
+.actions > div button:hover {
+  background: var(--color-primary-hover);
+}
+
+@media (max-width: 680px) {
+  .card {
+    padding: 10px;
+    border-radius: 14px;
   }
+
+  .card img {
+    height: 145px;
+    padding: 13px;
+    margin-bottom: 11px;
+  }
+
+  .card h3 {
+    font-size: 0.81rem;
+  }
+
+  .card > p {
+    font-size: 0.9rem;
+  }
+
+  .actions a {
+    width: 32px;
+    height: 32px;
+    font-size: 1.05rem;
+  }
+
+  .actions > div {
+    gap: 4px;
+  }
+
+  .actions > div button {
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .actions a,
+  .actions > div button {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

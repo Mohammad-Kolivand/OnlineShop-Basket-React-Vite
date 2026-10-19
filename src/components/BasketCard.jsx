@@ -3,7 +3,6 @@ import { shortenText } from "../helpers/helper";
 import styles from "./BasketCard.module.css";
 
 import { BsTrash2Fill } from "react-icons/bs";
-import { FaPoo } from "react-icons/fa6";
 
 
 function BasketCard({ data, clickHandler }) {

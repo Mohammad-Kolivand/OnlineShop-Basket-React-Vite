@@ -24,9 +24,9 @@ function SideBar({ query, setQuery }) {
             <li
               key={item.id}
               className={
-                item.type.toLocaleLowerCase() === query.category
+                (query.category || "all") === item.type.toLocaleLowerCase()
                   ? styles.selected
-                  : null
+                  : undefined
               }
             >
               {item.type}

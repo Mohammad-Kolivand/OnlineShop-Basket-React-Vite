@@ -1,65 +1,93 @@
 import { createContext, useContext, useReducer } from "react";
-
 import { sumProducts } from "../helpers/helper";
 
 const initialState = {
   selectedItems: [],
-  itemCounter: 0,
+  itemsCounter: 0,
   total: 0,
   checkout: false,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "ADD_ITEM":
-      if (!state.selectedItems.find((item) => item.id === action.payload.id)) {
-        state.selectedItems.push({ ...action.payload, quantity: 1 });
-      }
+    case "ADD_ITEM": {
+      const existingItem = state.selectedItems.find(
+        (item) => item.id === action.payload.id
+      );
+
+      const selectedItems = existingItem
+        ? state.selectedItems.map((item) =>
+            item.id === action.payload.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        : [...state.selectedItems, { ...action.payload, quantity: 1 }];
+
       return {
         ...state,
-        ...sumProducts(state.selectedItems),
+        selectedItems,
+        ...sumProducts(selectedItems),
         checkout: false,
       };
-    case "REMOVE_ITEM":
-      const newSelectedItems = state.selectedItems.filter(
+    }
+
+    case "REMOVE_ITEM": {
+      const selectedItems = state.selectedItems.filter(
         (item) => item.id !== action.payload.id
       );
+
       return {
         ...state,
-        selectedItems: [...newSelectedItems],
-        ...sumProducts(newSelectedItems),
+        selectedItems,
+        ...sumProducts(selectedItems),
       };
-    case "INCREASE":
-      const increaseIndex = state.selectedItems.findIndex(
-        (item) => item.id === action.payload.id
+    }
+
+    case "INCREASE": {
+      const selectedItems = state.selectedItems.map((item) =>
+        item.id === action.payload.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
       );
-      state.selectedItems[increaseIndex].quantity++;
+
       return {
         ...state,
-        ...sumProducts(state.selectedItems),
+        selectedItems,
+        ...sumProducts(selectedItems),
+        checkout: false,
       };
-    case "DECREASE":
-      const decreaseIndex = state.selectedItems.findIndex(
-        (item) => item.id === action.payload.id
-      );
-      state.selectedItems[decreaseIndex].quantity--;
+    }
+
+    case "DECREASE": {
+      const selectedItems = state.selectedItems
+        .map((item) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+
       return {
         ...state,
-        ...sumProducts(state.selectedItems),
+        selectedItems,
+        ...sumProducts(selectedItems),
       };
+    }
+
     case "CHECKOUT":
       return {
         selectedItems: [],
-        itemCounter: 0,
+        itemsCounter: 0,
         total: 0,
         checkout: true,
       };
+
     default:
-      throw new Error("Invalid Action!");
+      throw new Error(`Invalid Action: ${action.type}`);
   }
 };
 
-const CartContext = createContext();
+const CartContext = createContext(null);
 
 function CartProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -72,7 +100,13 @@ function CartProvider({ children }) {
 }
 
 const useCart = () => {
-  const { state, dispatch } = useContext(CartContext);
+  const context = useContext(CartContext);
+
+  if (!context) {
+    throw new Error("useCart must be used within CartProvider");
+  }
+
+  const { state, dispatch } = context;
   return [state, dispatch];
 };
 

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useProduct } from "../context/ProductsContext";
+import { useProduct, useProductStatus } from "../context/ProductsContext";
 
 import {
   filterProducts,
@@ -10,45 +10,69 @@ import {
 
 import Card from "../components/Card";
 import Loader from "../components/Loader";
-
-import styles from "./Products.module.css";
 import SearchBox from "../components/SearchBox";
 import SideBar from "../components/SideBar";
 
+import styles from "./Products.module.css";
+
 function Products() {
   const products = useProduct();
-  // const products = [];
-
-  const [search, setSearch] = useState("");
-  const [displayed, setDisplayed] = useState([]);
-  const [query, setQuery] = useState({});
+  const { loading, error } = useProductStatus();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    setDisplayed(products);
+  const query = useMemo(
+    () => getInitialQuery(searchParams),
+    [searchParams]
+  );
 
-    setQuery(getInitialQuery(searchParams));
-  }, [products]);
+  const [search, setSearch] = useState(query.search || "");
 
   useEffect(() => {
-    setSearchParams(query);
     setSearch(query.search || "");
-    let finalProducts = searchProducts(products, query.search);
-    finalProducts = filterProducts(finalProducts, query.category);
-    setDisplayed(finalProducts);
-  }, [query]);
+  }, [query.search]);
+
+  const displayed = useMemo(() => {
+    let result = searchProducts(products, query.search);
+    result = filterProducts(result, query.category);
+    return result;
+  }, [products, query.search, query.category]);
+
+  const updateQuery = (updater) => {
+    const currentQuery = getInitialQuery(searchParams);
+    const nextQuery =
+      typeof updater === "function" ? updater(currentQuery) : updater;
+
+    setSearchParams(nextQuery);
+  };
 
   return (
     <>
-      <SearchBox search={search} setSearch={setSearch} setQuery={setQuery} />
+      <SearchBox
+        search={search}
+        setSearch={setSearch}
+        setQuery={updateQuery}
+      />
+
       <div className={styles.container}>
         <div className={styles.products}>
-          {!displayed.length && <Loader />}
-          {displayed.map((p) => (
-            <Card key={p.id} data={p} />
-          ))}
+          {loading && <Loader />}
+
+          {!loading && error && (
+            <p role="alert">Unable to load products: {error}</p>
+          )}
+
+          {!loading && !error && displayed.length === 0 && (
+            <p>No products found. Try another search or category.</p>
+          )}
+
+          {!loading &&
+            !error &&
+            displayed.map((product) => (
+              <Card key={product.id} data={product} />
+            ))}
         </div>
-        <SideBar query={query} setQuery={setQuery} />
+
+        <SideBar query={query} setQuery={updateQuery} />
       </div>
     </>
   );

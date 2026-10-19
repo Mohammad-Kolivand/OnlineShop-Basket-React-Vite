@@ -22,7 +22,6 @@ function Basket() {
     );
   }
 
-  console.log(state);
   return (
     <div className={styles.container}>
       <BasketSideBar state={state} clickHandler={clickHandler} />
